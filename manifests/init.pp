@@ -13,6 +13,7 @@ class phantomjs($version = "1.5.0" ) {
     file { $phantom_src_path : ensure => directory }
 
     exec { "download-${filename}" : 
+        path => '/usr/bin:/usr/sbin:/bin',
         command => "wget http://phantomjs.googlecode.com/files/${filename} -O ${filename}",
         cwd => $phantom_src_path,
         creates => "${phantom_src_path}${filename}",
@@ -20,6 +21,7 @@ class phantomjs($version = "1.5.0" ) {
     }
     
     exec { "extract-${filename}" :
+        path => '/usr/bin:/usr/sbin:/bin',
         command     => "tar xvfz ${filename} -C /opt/",
         creates     => "/opt/phantomjs/",
         cwd         => $phantom_src_path,
@@ -39,6 +41,7 @@ class phantomjs($version = "1.5.0" ) {
     }
     
     exec { "nuke-old-version-on-upgrade" :
+        path => '/usr/bin:/usr/sbin:/bin',
         command => "rm -Rf /opt/phantomjs /usr/local/bin/phantomjs",
         unless => "test -f /usr/local/bin/phantomjs && /usr/local/bin/phantomjs --version | grep ${version}",
         before => Exec["download-${filename}"]
